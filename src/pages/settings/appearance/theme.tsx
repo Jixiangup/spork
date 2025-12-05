@@ -15,7 +15,7 @@ const Theme = () => {
 
 	const [appName, setAppName] = useState<string>('Spork');
 	const [settings, setSettings] = useState<Settings>(defaultSettings());
-	const { setColorMode, setDayScheme, setNightScheme, colorScheme } = useTheme();
+	const { setColorMode, colorScheme } = useTheme();
 
 	const { t } = useTranslation('settings');
 
@@ -125,7 +125,6 @@ const Theme = () => {
 										return;
 									}
 									setSettings(newSettings);
-									console.log('Theme mode updated to:', newSettings);
 									if (e.target.value === 'single') {
 										setColorMode('dark');
 										document.documentElement.setAttribute('data-color-mode', 'dark');
