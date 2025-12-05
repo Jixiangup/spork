@@ -1,0 +1,22 @@
+ {
+  border-bottom: 1px solid var(--borderColor-default);
+  border-top: 1px solid var(--borderColor-default);
+}
+
+ .layout-nav-header::after {
+  content: "";
+  display: block;
+  width: 90%;      /* 横线长度 */
+  height: 1px;      /* 横线厚度 */
+  margin: 0 auto;
+  background: var(--borderColor-default);
+}
+
+ .layout-nav-footer::before {
+   content: "";
+   display: block;
+   width: 90%;      /* 横线长度 */
+   height: 1px;      /* 横线厚度 */
+   margin: 0 auto;
+   background: var(--borderColor-default);
+ }
