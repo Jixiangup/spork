@@ -9,6 +9,7 @@ export type Path =
   | `/apps`
   | `/settings/appearance/theme`
   | `/settings/card`
+  | `/settings/card/bak`
   | `/settings/general/language-and-region`
 
 export type Params = {

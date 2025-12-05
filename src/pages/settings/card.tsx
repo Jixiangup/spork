@@ -1,72 +1,78 @@
-import {Box, Stack} from "@primer/react-brand";
-import {Heading, Label} from "@primer/react";
-import {FC, PropsWithChildren, ReactNode} from "react";
+import { Heading, Label } from '@primer/react';
+import { FC, type PropsWithChildren, ReactNode } from 'react';
+import './card.scss';
+import { useTranslation } from 'react-i18next';
 
-type SettingsCardProps = {
-  className?: string;
-  icon?: ReactNode;
-  title: string;
-  enableTitleBorder?: boolean;
-  enableDescriptionBorder?: boolean;
-  muted?: boolean;
-  active?: boolean;
+type CardsProps = {
+	icon?: ReactNode;
+	header: string;
+	headerClassName?: string;
+	enableHeaderBackground?: boolean;
+	active?: boolean;
+	headerAs?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+	headerVariant?: 'large' | 'medium' | 'small';
+	headerBorder?: boolean;
+	contentBorder?: boolean;
+	className?: string;
 } & PropsWithChildren;
 
-const SettingsCard: FC<SettingsCardProps> = ({
-                                               className,
-                                               icon,
-                                               title,
-                                               enableTitleBorder,
-                                               enableDescriptionBorder,
-                                               muted,
-                                               active,
-                                               children
-                                             }) => {
-  return (
-    <Box className={`w-full h-1/12 ${className}`}>
-      {
-        enableTitleBorder ? (
-          <div
-            style={{
-              borderWidth: 1,
-              borderStyle: 'solid',
-              borderColor: active ? `var(--borderColor-accent-${muted ? 'muted' : 'inset'})` : `var(--borderColor-${muted ? 'muted' : 'inset'})`,
-              backgroundColor: active ? `var(--bgColor-accent-${muted ? 'muted' : 'inset'})` : `var(--bgColor-${muted ? 'muted' : 'inset'})`,
-            }}
-            className={`rounded-[var(--borderRadius-default)]`
-            }
-          >
-            <Stack direction='horizontal' alignItems='center' justifyContent={'space-between'} gap={4}>
-              <Stack direction='horizontal' alignItems='center' gap={4} padding={'none'}>
-                {icon ? icon : <></>}<Heading as='h2'>{title}</Heading>
-              </Stack>
-              {active ? <Label variant="accent">&nbsp;&nbsp;Active&nbsp;&nbsp;</Label> : <></>}
-            </Stack>
-          </div>
-        ) : <div style={{marginBottom: 'var(--stack-gap-normal)'}}><Heading as='h2'>{title}</Heading></div>
-      }
-      {
-        enableDescriptionBorder ?
-          (
-            <div
-              className='border border-solid border-[var(--borderColor-default)] rounded-[var(--borderRadius-default)]'
-              style={{
-                borderTopWidth: 0,
-                borderColor: active ? `var(--borderColor-accent-${muted ? 'muted' : 'inset'})` : `var(--borderColor-default)`,
-              }}
-            >
-              <Stack>
-                {children}
-              </Stack>
-            </div>
-          ) :
-          <div className='border-0 border-t border-solid border-[var(--borderColor-default)]'
-               style={{paddingTop: 'var(--stack-gap-normal)'}}>
-            {children}
-          </div>
-      }
-    </Box>
-  );
-}
+export const SettingsCard: FC<CardsProps> = ({
+	icon,
+	header,
+	headerClassName = '',
+	enableHeaderBackground = false,
+	active = false,
+	children,
+	headerAs = 'h2',
+	headerBorder = false,
+	contentBorder = false,
+	className = '',
+	headerVariant = 'medium',
+}) => {
+
+	const { t } = useTranslation();
+
+	const headerClasses = [
+		'settings-card__header',
+		headerClassName,
+		headerBorder ? 'settings-card__header--full-border' : 'settings-card__header--bottom-border',
+		contentBorder ? 'settings-card__header--clip-bottom-radius' : '',
+	].join(' ');
+
+	const contentClasses = [
+		'settings-card__content',
+		contentBorder ? 'settings-card__content--border' : 'settings-card__content--no-border',
+		headerBorder ? 'settings-card__content--clip-top-radius' : '',
+	].join(' ');
+
+	const headerBgClass = () => {
+		if (enableHeaderBackground) {
+			return 'bg-[var(--bgColor-inset)]';
+		}
+		return '';
+	};
+
+	return (
+		<div className={`settings-card ${active ? 'settings-card--active' : ''} ${className}`}>
+			<div className={`${active ? 'header-active' : ''} ${headerClasses} ${headerBgClass()}`}>
+				{/* 合并为一个容器：左侧图标+标题，右侧可选 Active 标签 */}
+				<div className="settings-card__header-main">
+					{icon && <span className="settings-card__icon">{icon}</span>}
+					<Heading as={headerAs} variant={headerVariant} className="settings-card__title">
+						{header}
+					</Heading>
+				</div>
+
+				{active && (
+					<Label variant='accent'>
+						{t('active')}
+					</Label>
+				)}
+			</div>
+
+			<div className={contentClasses}>{children}</div>
+		</div>
+	);
+};
 
 export default SettingsCard;

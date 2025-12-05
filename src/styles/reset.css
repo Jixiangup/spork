@@ -1,9 +1,16 @@
-/*@import 'normalize.css';*/
-* {
-  margin: 0;
-  padding: 0;
+:where(*),
+:where(*::before),
+:where(*::after) {
+	box-sizing: border-box;
+}
+
+:where(*),
+:where(*::before),
+:where(*::after) {
+	margin: 0;
+	padding: 0;
 }
 
 h1 {
-  margin: 0;
+	margin: 0;
 }

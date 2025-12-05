@@ -1,3 +1,4 @@
+/* 先引入 Primer 的 primitives 与品牌样式 */
 @import '@primer/primitives/dist/css/base/size/size.css';
 @import '@primer/primitives/dist/css/base/typography/typography.css';
 @import '@primer/primitives/dist/css/base/motion/motion.css';
@@ -21,44 +22,56 @@
 
 @import '@primer/react-brand/lib/css/main.css';
 
-@import 'tailwindcss';
+/* 正确使用 Tailwind：只在 global.css 放三层指令 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* @import "./github-markdown.css"; */
+/* 你的全局排版（放在 components 层更合理） */
+@layer components {
+	h1 {
+		font-size: var(--text-title-size-large);
+		line-height: var(--text-title-lineHeight-large);
+		font-weight: var(--text-title-weight-large);
+	}
 
-h1 {
-  font-size: var(--text-title-size-large);
-  line-height: var(--text-title-lineHeight-large);
-  font-weight: var(--text-title-weight-large);
+	h2 {
+		font-size: var(--text-title-size-medium);
+		line-height: var(--text-title-lineHeight-medium);
+		font-weight: var(--text-title-weight-medium);
+	}
+
+	p,
+	span,
+	li {
+		font-size: var(--text-body-size-medium);
+		line-height: var(--text-body-lineHeight-large);
+	}
 }
 
-h2 {
-  font-size: var(--text-title-size-medium);
-  line-height: var(--text-title-lineHeight-medium);
-  font-weight: var(--text-title-weight-medium);
-}
-
-p,
-span,
-li {
-  font-size: var(--text-body-size-medium);
-  line-height: var(--text-body-lineHeight-large);
-}
-
+/* 你的主题与布局 */
 :root {
-  --bgColor-default: var(--bgColor-default);
-  --fgColor-default: var(--fgColor-default);
+	--bgColor-default: var(--bgColor-default);
+	--fgColor-default: var(--fgColor-default);
 }
 
 html,
 body {
-  background: var(--bgColor-default);
-  color: var(--fgColor-default);
-  height: 100dvh;
+	background: var(--bgColor-default);
+	color: var(--fgColor-default);
+	height: 100dvh;
 }
 
 #root,
-#root > div,
-#root > div > div {
-  height: 100%;
-  min-height: 100%;
+#root>div,
+#root>div>div {
+	height: 100%;
+	min-height: 100%;
+}
+
+/* 如需自定义工具类（确保覆盖），放在 utilities 层 */
+@layer utilities {
+	.p-stack-normal {
+		padding: var(--stack-padding-normal);
+	}
 }

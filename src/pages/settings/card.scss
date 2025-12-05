@@ -1,0 +1,101 @@
+$radius: var(--borderRadius-medium);
+$border-color: var(--borderColor-default, #d0d7de);
+$border-color-active: var(--borderColor-accent-muted, #d0d7de);
+$header-bg: var(--bgColor-default, #f6f8fa);
+$header-active-bg: var(--bgColor-accent-muted, #e1e4e8);
+
+.settings-card {
+	width: 100%;
+
+	.header-active {
+		background: $header-active-bg;
+	}
+}
+
+/* 标题区域 */
+.settings-card__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	/* 左右分布：左侧主内容 + 右侧 Active 标签 */
+
+	.settings-card__header-main {
+		display: inline-flex;
+		align-items: center;
+		/* 图标与标题间距 */
+	}
+
+	.settings-card__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.settings-card__title {
+		margin: 0;
+		/* 去掉 Heading 默认外边距，避免影响布局 */
+	}
+
+	&--full-border {
+		border: 1px solid $border-color;
+		border-top-left-radius: $radius;
+		border-top-right-radius: $radius;
+		background: $header-bg;
+	}
+
+	&--bottom-border {
+		border-bottom: 1px solid $border-color;
+		border-top-left-radius: $radius;
+		border-top-right-radius: $radius;
+	}
+
+	/* 当内容有边框时，标题的下方圆角需关闭以实现“上下拼接” */
+	&--clip-bottom-radius {
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+}
+
+/* 内容区域 */
+.settings-card__content {
+	&--border {
+		border: 1px solid $border-color;
+		border-bottom-left-radius: $radius;
+		border-bottom-right-radius: $radius;
+	}
+
+	&--no-border {
+		border: none;
+	}
+
+	/* 当标题有边框（四面或仅下边）时，内容的上方圆角需关闭以贴合标题 */
+	&--clip-top-radius {
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+}
+
+/* 相邻时去掉 content 的上边框，避免叠线（保留 header 的底边） */
+.settings-card__header+.settings-card__content--border {
+	border-top-width: 0;
+}
+
+/* Active 状态：覆盖边框色为 accent-muted；相邻去重规则保留 */
+.settings-card.settings-card--active {
+	.settings-card__header {
+		&--full-border {
+			border-color: $border-color-active;
+			/* 若需标题高亮底色，header-active 已处理 */
+		}
+
+		&--bottom-border {
+			border-bottom-color: $border-color-active;
+		}
+	}
+
+	.settings-card__content {
+		&--border {
+			border-color: $border-color-active;
+		}
+	}
+}

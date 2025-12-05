@@ -1,0 +1,23 @@
+{
+	// 通用编辑器设置
+	"editor.tabSize": 4,
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"editor.formatOnSave": true,
+	// 仅针对 TypeScript 文件的设置覆盖
+	"[typescript]": {
+		"editor.tabSize": 2,
+		"editor.insertSpaces": false
+	},
+	"[typescriptreact]": {
+		"editor.tabSize": 2,
+		"editor.insertSpaces": false
+	},
+	// 仅针对 SCSS/Sass 的默认格式化器
+	"[scss]": {
+		"editor.defaultFormatter": "vscode.css-language-features"
+	},
+	"[css]": {
+		"editor.defaultFormatter": "vscode.css-language-features"
+	}
+}
