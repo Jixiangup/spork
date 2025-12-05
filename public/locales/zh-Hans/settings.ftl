@@ -17,3 +17,5 @@ theme_mode_sync_label = 与系统同步
 theme_mode_single_label = 单一主题
 theme_mod_light = 浅色主题
 theme_mod_dark = 深色主题
+sync_light_describe = 当您的系统设置为“浅色模式”时，此主题将处于活动状态
+sync_dark_describe = 当您的系统设置为“深色模式”时，此主题将处于活动状态

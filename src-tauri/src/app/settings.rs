@@ -11,13 +11,43 @@ pub static SETTINGS_FILENAME: &str = "settings.json";
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum ThemeMode {
-    Sync,
-    Single,
+    Day,
+    Night,
+    Auto,
 }
 
 impl Default for ThemeMode {
     fn default() -> Self {
-        ThemeMode::Sync
+        ThemeMode::Auto
+    }
+}
+
+impl ThemeMode {
+    pub fn default_scheme(&self) -> ThemeScheme {
+        match self {
+            ThemeMode::Day => ThemeScheme::Light,
+            ThemeMode::Night => ThemeScheme::Dark,
+            ThemeMode::Auto => ThemeScheme::Light,
+        }
+    }
+}
+
+#[derive(Clone, Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum ThemeScheme {
+    Light,
+    LightColorblind,
+    LightTritanopia,
+    LightHighContrast,
+    Dark,
+    DarkColorblind,
+    DarkTritanopia,
+    DarkDimmed,
+}
+
+impl Default for ThemeScheme {
+    fn default() -> Self {
+        ThemeScheme::Light
     }
 }
 
@@ -29,12 +59,18 @@ pub struct GeneralSettings {
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct ThemeSettings {
     pub mode: ThemeMode,
+    pub scheme: ThemeScheme,
+    pub night_scheme: ThemeScheme,
+    pub day_scheme: ThemeScheme,
 }
 
 impl Default for ThemeSettings {
     fn default() -> Self {
         ThemeSettings {
             mode: ThemeMode::default(),
+            scheme: ThemeScheme::default(),
+            night_scheme: ThemeScheme::DarkDimmed,
+            day_scheme: ThemeScheme::Light,
         }
     }
 }

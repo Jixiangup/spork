@@ -14,7 +14,7 @@ if (!rootElement) throw new Error("Failed to find the root element");
 const root = createRoot(rootElement);
 
 (async () => {
-	let settings: Settings;
+	let settings: Settings = defaultSettings();
 	try {
 		try {
 			settings = await fetchSettings();
@@ -26,9 +26,14 @@ const root = createRoot(rootElement);
 	} catch (error) {
 		console.error("Failed to initialize i18n:", error);
 	}
+	console.log('Loaded settings:', settings);
+	/* 设置主题 */
+	document.documentElement.setAttribute('data-color-mode', settings.theme.mode);
+	document.documentElement.setAttribute('data-light-theme', settings.theme.day_scheme);
+	document.documentElement.setAttribute('data-dark-theme', settings.theme.night_scheme);
 	root.render(
 		<StrictMode>
-			<ThemeProvider colorMode='auto' nightScheme='dark_dimmed' dayScheme='light'>
+			<ThemeProvider colorMode={settings.theme.mode} nightScheme={settings.theme.night_scheme} dayScheme={settings.theme.day_scheme}>
 				<BaseStyles>
 					<Routes />
 				</BaseStyles>

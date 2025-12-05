@@ -4,23 +4,33 @@ import { useTranslation } from 'react-i18next';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { getName } from '@tauri-apps/api/app';
 import { Stack } from '@primer/react/experimental';
-import { FormControl, Select, Text } from '@primer/react';
-import { ThemeMod, type ThemeMode } from '@/theme';
-import { defaultSettings, Settings } from '@/stores/core.ts';
+import { FormControl, Select, Text, useTheme } from '@primer/react';
+import { defaultSettings, Settings, ThemeMode } from '@/stores/core.ts';
 import { Api } from '@/api';
 import { MoonIcon, SunIcon } from '@primer/octicons-react';
+
+type ThemeModeOption = 'sync' | 'single';
 
 const Theme = () => {
 
 	const [appName, setAppName] = useState<string>('Spork');
-	const [settings, setSettings] = useState<Settings>(defaultSettings);
+	const [settings, setSettings] = useState<Settings>(defaultSettings());
+	const { setColorMode, setDayScheme, setNightScheme, colorScheme } = useTheme();
 
 	const { t } = useTranslation('settings');
 
-	const themeModes: ThemeMode[] = ['sync', 'single'];
-	const syncThemeMods: ThemeMod[] = ['light', 'dark'];
+	const themeModes: ThemeModeOption[] = ['sync', 'single'];
+	const syncThemeMods = ['light', 'dark'];
 
-	const renderThemeModeOptions = (mode: ThemeMode): ReactNode => {
+	const getModeFromScheme = (): 'dark' | 'light' => {
+		if (colorScheme?.startsWith('light')) {
+			return 'light';
+		} else {
+			return 'dark';
+		}
+	}
+
+	const renderThemeModeOptions = (mode: ThemeModeOption): ReactNode => {
 		if (mode === 'sync') {
 			return renderSyncThemeModeOptions();
 		}
@@ -40,6 +50,7 @@ const Theme = () => {
 					syncThemeMods.map((mod) => {
 						return (
 							<SettingsCard
+								key={mod}
 								headerAs='h3'
 								headerVariant='small'
 								icon={mod === 'light' ? <SunIcon /> : <MoonIcon />}
@@ -49,10 +60,10 @@ const Theme = () => {
 								contentBorder
 								headerClassName='p-[var(--stack-padding-normal)]'
 								enableHeaderBackground
-								active={'dark' === mod}
+								active={getModeFromScheme() === mod}
 							>
 								<div className='p-[var(--stack-padding-normal)]'>
-									内容
+									<Text>{t(`sync_${mod}_describe`, { appName })}</Text>
 								</div>
 							</SettingsCard>
 						);
@@ -91,15 +102,15 @@ const Theme = () => {
 	const renderThemeMode = (): ReactNode => {
 		return (
 			<Stack>
-				<FormControl>
-					<Stack padding={'none'} className={'w-full'}>
-						<FormControl.Label>{t('theme_mode_label')}</FormControl.Label>
+				<Stack padding={'none'} className={'w-full'}>
+					<FormControl>
+						<FormControl.Label htmlFor='theme_mode'>{t('theme_mode_label')}</FormControl.Label>
 						<div>
 							<Select
 								name='theme_mode'
-								value={settings.theme.mode}
+								value={settings.theme.mode === 'auto' ? 'sync' : 'single'}
 								onChange={async (e) => {
-									const newMode = e.target.value as ThemeMode;
+									const newMode = (e.target.value === 'sync' ? 'auto' : 'day') as ThemeMode;
 									const newSettings = {
 										...settings,
 										theme: {
@@ -114,6 +125,14 @@ const Theme = () => {
 										return;
 									}
 									setSettings(newSettings);
+									console.log('Theme mode updated to:', newSettings);
+									if (e.target.value === 'single') {
+										setColorMode('dark');
+										document.documentElement.setAttribute('data-color-mode', 'dark');
+									} else {
+										setColorMode(newSettings.theme.mode);
+										document.documentElement.setAttribute('data-color-mode', newSettings.theme.mode);
+									}
 								}}
 							>
 								{
@@ -125,9 +144,9 @@ const Theme = () => {
 								}
 							</Select>
 						</div>
-						{renderThemeModeOptions(settings.theme.mode)}
-					</Stack>
-				</FormControl>
+						{renderThemeModeOptions(settings.theme.mode === 'auto' ? 'sync' : 'single')}
+					</FormControl>
+				</Stack>
 			</Stack>
 		)
 	}

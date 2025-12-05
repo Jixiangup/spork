@@ -17,3 +17,5 @@ theme_mode_sync_label = Sync with system
 theme_mode_single_label = Single Theme
 theme_mod_light = Light Theme
 theme_mod_dark = Dark Theme
+sync_light_describe = This theme will be active when your system is set to “light mode”
+sync_dark_describe = This theme will be active when your system is set to “dark mode”
