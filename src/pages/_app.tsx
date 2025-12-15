@@ -1,105 +1,78 @@
-import { ReactNode } from "react";
-import { Outlet, useLocation } from "react-router";
-import { NavList } from "@primer/react";
-import { Box, Stack } from "@primer/react-brand";
-import { AppsIcon, GearIcon, HomeIcon, InfoIcon } from "@primer/octicons-react";
-import { type Path } from "@/router.ts";
-import { useTranslation } from "react-i18next";
+import { Button, NavList, PageLayout, Stack, Text } from '@primer/react'
+import { AppsIcon, GearIcon, HomeIcon, InfoIcon, ThreeBarsIcon } from '@primer/octicons-react';
+import { Link, Outlet } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, type Path } from '@/router';
 
-import '@/styles/layout.css';
+import '../styles/_app.scss';
 
-type NavItemProps = {
+type NavItem = {
 	label: string;
-	href: Path;
-	icon?: ReactNode;
-	isSetting?: boolean;
+	icon: React.ReactNode;
+	path?: Path;
 }
 
-const SETTINGS_PATH = '/settings';
+export default function Layout() {
 
-const Layout = () => {
+	const { t } = useTranslation();
+	const navigate = useNavigate();
 
-	const { pathname } = useLocation();
-	const { t } = useTranslation('layout');
-
-	const navItems: NavItemProps[] = [
-		{ label: t('nav_home_label'), href: '/', icon: <HomeIcon /> },
-		{ label: t('nav_app_label'), href: '/apps', icon: <AppsIcon /> },
+	const navs: NavItem[] = [
+		{ label: t('home_label'), icon: <HomeIcon />, path: '/' },
+		{ label: t('app_label'), icon: <AppsIcon />, path: '/apps' },
 	];
-
-	const footerItems: NavItemProps[] = [
-		{ label: t('nav_about_label'), href: '/about', icon: <InfoIcon /> },
-		{ label: t('nav_settings_label'), href: '/settings/general/language-and-region', icon: <GearIcon />, isSetting: true },
-	];
-
-	const isCurrentNav = (item: NavItemProps): 'page' | 'step' | 'location' | 'date' | 'time' | 'true' | 'false' | boolean | undefined => {
-		if (item.href) {
-			if (item.isSetting) {
-				return pathname.startsWith(SETTINGS_PATH) ? 'page' : undefined;
-			} else {
-				return pathname === item.href ? 'page' : undefined;
-			}
-		}
-	}
 
 	return (
-		<Box className='h-[100%]'>
-			<Box className='flex items-stretch h-[100%]' style={{ flexDirection: 'row' }}> {/* flex-row 不知道为什么没有生效 */}
-				{/* 左侧导航容器 */}
-				<Box className='layout-nav h-[100%] flex flex-[0_0_26%] flex-col'>
-					{/* LOGO */}
-					<Box className='layout-nav-header layout-nav-item flex-[0_0_5%] justify-center content-center'>
-						<Stack>
-							<div>LOGO</div>
-						</Stack>
-					</Box>
-					{/* 导航项 */}
-					<Box className='layout-nav-center layout-nav-item flex-1'>
-						<Stack>
-							<NavList>
-								{navItems.map((item) => (
-									<NavList.Item
-										key={item.href}
-										href={item.href}
-										style={{ marginBottom: 'var(--stack-gap-normal)' }}
-										aria-current={isCurrentNav(item)}
-									>
-										{item.icon ? <NavList.LeadingVisual>{item.icon}</NavList.LeadingVisual> : null}
-										{item.label}
-									</NavList.Item>
-								))}
-							</NavList>
-						</Stack>
-					</Box>
-					<Box className='layout-nav-footer layout-nav-item flex-[0_0_5%] w-[100%]'>
-						<Stack>
-							<NavList>
-								{footerItems.map((item) => (
-									<NavList.Item
-										key={item.href}
-										href={item.href}
-										style={{ marginBottom: 'var(--stack-gap-normal)' }}
-										aria-current={isCurrentNav(item)}
-									>
-										{item.icon ? <NavList.LeadingVisual>{item.icon}</NavList.LeadingVisual> : null}
-										{item.label}
-									</NavList.Item>
-								))}
-							</NavList>
-						</Stack>
-					</Box>
-				</Box>
-				{/* 中间的分割线 */}
-				<div className="divider w-px bg-[var(--borderColor-default)]" aria-hidden="true" />
-				{/* 右侧内容容器 */}
-				<Box className='layout-content flex-1 h-[100%]'>
-					<Stack>
-						<main className='layout-main'><Outlet /></main>
+		<PageLayout containerWidth='full' className='app-layout h-full' padding='none' rowGap='none' columnGap='none'>
+			<PageLayout.Header divider="line" padding='none'>
+				<div className="header">
+					<Stack direction="horizontal" align={'center'} justify={'center'} gap={'none'} padding={'none'}>
+						<Button className='w-[var(--base-size-32)] h-[var(--base-size-32)]' variant='invisible' aria-label="Menu">
+							<Text size='large'><ThreeBarsIcon /></Text>
+						</Button>
+						<Link reloadDocument to={'/'} className='text-[var(--fgColor-default)] hover:no-underline'>
+							<Text size='large' weight='semibold'>Header</Text>
+						</Link>
 					</Stack>
-				</Box>
-			</Box>
-		</Box>
-	);
-}
+				</div>
+			</PageLayout.Header>
 
-export default Layout;
+			<PageLayout.Pane position="start" divider="line" padding='none' sticky >
+				<div className="sidebar">
+					<div className='sidebar-nav sidebar-item'>
+						<NavList>
+							{
+								navs.map((nav) => (
+									<Link key={nav.label} to={nav.path ?? '#'} className='sidebar-link'>
+										<NavList.Item
+											key={nav.label}
+											aria-current={window.location.pathname === (nav.path ?? '#') ? 'page' : undefined}
+										>
+											<NavList.LeadingVisual>{nav.icon}</NavList.LeadingVisual>
+											{nav.label}
+										</NavList.Item>
+									</Link>
+								))
+							}
+						</NavList>
+					</div>
+					<div className='sidebar-settings'>
+						<Button block leadingVisual={InfoIcon} onClick={() => navigate('/about', { replace: true })} variant='invisible' alignContent='start'>{t('about_label')}</Button>
+						<Button block leadingVisual={GearIcon} onClick={() => navigate('/settings/general/language-and-region', { replace: true })} variant='invisible' alignContent='start'>{t('settings_label')}</Button>
+					</div>
+				</div>
+			</PageLayout.Pane>
+
+			<PageLayout.Content padding='none'>
+				<Outlet />
+			</PageLayout.Content>
+
+			<PageLayout.Footer divider="line" padding='none' hidden>
+				<div className="footer">
+					Footer
+				</div>
+			</PageLayout.Footer>
+		</PageLayout>
+
+	)
+}

@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useRef, useState } from "react";
-import SettingsCard from "@/pages/settings/card";
+import SettingsCard from "@/pages/settings/_components/Card";
 import { useTranslation } from "react-i18next";
 import { Button, FormControl, Select } from "@primer/react";
 import { type SupportedLanguages } from "@/i18n.ts";

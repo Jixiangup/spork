@@ -1,6 +1,6 @@
 import { Heading, Label } from '@primer/react';
 import { FC, type PropsWithChildren, ReactNode } from 'react';
-import './card.scss';
+import './Card.scss';
 import { useTranslation } from 'react-i18next';
 
 type CardsProps = {

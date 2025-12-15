@@ -1,0 +1,23 @@
+$defaultBgColor: var(--bgColor-default, #f6f8fa);
+$defaultBorderColor: var(--borderColor-default, #d0d7de);
+$defaultBorderWidth: var(--borderWidth-thin, 1px);
+$activeBorderColor: var(--borderColor-accent-emphasis, #0969da);
+
+.scheme-radio-container {
+	background-color: $defaultBgColor;
+	border: solid 1px var(--borderColor-default);
+	border-radius: 6px;
+
+	.scheme-radio-content {
+		border-bottom: solid var(--borderWidth-thin, 1px) var(--borderColor-default);
+		width: 100%;
+	}
+
+	:hover {
+		cursor: pointer;
+	}
+}
+
+.scheme-radio-checked {
+	border-color: var(--borderColor-accent-emphasis);
+}

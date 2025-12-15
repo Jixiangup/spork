@@ -1,13 +1,13 @@
-import { Box } from '@primer/react-brand';
-import SettingsCard from '@/pages/settings/card.tsx';
+import SettingsCard from '@/pages/settings/_components/Card';
 import { useTranslation } from 'react-i18next';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { getName } from '@tauri-apps/api/app';
 import { Stack } from '@primer/react/experimental';
 import { FormControl, Select, Text, useTheme } from '@primer/react';
-import { defaultSettings, Settings, ThemeMode } from '@/stores/core.ts';
+import { defaultSettings, Settings, ThemeMode, ThemeScheme } from '@/stores/core.ts';
 import { Api } from '@/api';
 import { MoonIcon, SunIcon } from '@primer/octicons-react';
+import SchemeRadio from '@/pages/settings/_components/SchemeRadio';
 
 type ThemeModeOption = 'sync' | 'single';
 
@@ -16,6 +16,7 @@ const Theme = () => {
 	const [appName, setAppName] = useState<string>('Spork');
 	const [settings, setSettings] = useState<Settings>(defaultSettings());
 	const { setColorMode, colorScheme } = useTheme();
+	const [availableSchemes, setAvailableSchemes] = useState<ThemeScheme[]>([]);
 
 	const { t } = useTranslation('settings');
 
@@ -39,7 +40,22 @@ const Theme = () => {
 
 	const renderSingleThemeModeOptions = (): ReactNode => {
 		return (
-			<>Single Mode Options</>
+			<Stack className='w-full' wrap={'wrap'} direction='horizontal'>
+				{
+					availableSchemes.map((scheme) => {
+						return (
+							<SchemeRadio
+								className='w-[33.33%] box-border flex-shrink-0 mr-[var(--base-size-8)]'
+								key={scheme}
+								checked={scheme === settings.theme.scheme}
+								label={scheme}
+								value={scheme}
+								name="use_scheme"
+							/>
+						)
+					})
+				}
+			</Stack>
 		)
 	}
 
@@ -90,6 +106,19 @@ const Theme = () => {
 			console.error('Failed to fetch settings:', e);
 		}
 	}, []);
+
+	const fetchAvailableSchemes = useCallback(async () => {
+		try {
+			const schemes = await Api.getSettingsApi().schemes();
+			setAvailableSchemes(schemes);
+		} catch (e) {
+			console.error('Failed to fetch available schemes:', e);
+		}
+	}, []);
+
+	useEffect(() => {
+		fetchAvailableSchemes().then();
+	}, [fetchAvailableSchemes]);
 
 	useEffect(() => {
 		fetchAppName().then();
@@ -151,7 +180,7 @@ const Theme = () => {
 	}
 
 	return (
-		<Box>
+		<div>
 			<SettingsCard header={t('theme_title')}>
 				<Stack padding={'none'}>
 					<Text>
@@ -160,7 +189,7 @@ const Theme = () => {
 					{renderThemeMode()}
 				</Stack>
 			</SettingsCard>
-		</Box >
+		</div >
 	);
 }
 

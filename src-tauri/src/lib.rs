@@ -16,7 +16,7 @@ pub fn run() {
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::default().build())
-        .invoke_handler(tauri::generate_handler![greet, commands::settings::settings, commands::settings::save_settings])
+        .invoke_handler(tauri::generate_handler![greet, commands::settings::settings, commands::settings::save_settings, commands::settings::schemes, ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

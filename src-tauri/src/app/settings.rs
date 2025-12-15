@@ -51,6 +51,47 @@ impl Default for ThemeScheme {
     }
 }
 
+impl ThemeScheme {
+    pub fn all_schemes() -> Vec<ThemeScheme> {
+        vec![
+            ThemeScheme::Light,
+            ThemeScheme::LightColorblind,
+            ThemeScheme::LightTritanopia,
+            ThemeScheme::LightHighContrast,
+            ThemeScheme::Dark,
+            ThemeScheme::DarkColorblind,
+            ThemeScheme::DarkTritanopia,
+            ThemeScheme::DarkDimmed,
+        ]
+    }
+
+    pub fn is_dark(&self) -> bool {
+        matches!(
+            self,
+            ThemeScheme::Dark
+                | ThemeScheme::DarkColorblind
+                | ThemeScheme::DarkTritanopia
+                | ThemeScheme::DarkDimmed
+        )
+    }
+
+    pub fn is_light(&self) -> bool {
+        !self.is_dark()
+    }
+
+    pub fn available() -> Vec<ThemeScheme> {
+        vec![
+            ThemeScheme::Light,
+            ThemeScheme::LightColorblind,
+            ThemeScheme::LightTritanopia,
+            ThemeScheme::Dark,
+            ThemeScheme::DarkColorblind,
+            ThemeScheme::DarkTritanopia,
+            ThemeScheme::DarkDimmed,
+        ]
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct GeneralSettings {
     pub language: String,
@@ -100,7 +141,7 @@ impl<R: Runtime> Into<AppSettings> for Arc<Store<R>> {
             .get("theme")
             .and_then(|v| serde_json::from_value(v).ok())
             .unwrap_or(ThemeSettings::default());
-        
+
         AppSettings { general, theme }
     }
 }

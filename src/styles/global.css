@@ -20,8 +20,6 @@
 @import '@primer/primitives/dist/css/functional/themes/dark-high-contrast.css';
 @import '@primer/primitives/dist/css/functional/themes/dark-tritanopia.css';
 
-@import '@primer/react-brand/lib/css/main.css';
-
 /* 正确使用 Tailwind：只在 global.css 放三层指令 */
 @tailwind base;
 @tailwind components;

@@ -1,0 +1,56 @@
+$headerHeight: 65px;
+$headerPadding: var(--base-size-16);
+$sidebarMargin: var(--base-size-8);
+$sidebarPadding: var(--base-size-8);
+$borderColor: var(--borderColor-default, #d0d7de);
+
+.app-layout {
+
+	.header {
+		max-height: $headerHeight;
+		height: $headerHeight;
+		padding: $headerPadding;
+		align-items: center;
+		display: flex;
+	}
+
+	.sidebar {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+
+		.sidebar-item {
+			margin: $sidebarMargin;
+		}
+
+		.sidebar-settings {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			border-top: solid 1px $borderColor;
+			flex: 0 0 66px;
+			padding: $sidebarPadding 0;
+
+			.sidebar-settings-item {
+				display: flex;
+				align-items: center;
+				gap: var(--base-size-8);
+			}
+		}
+
+		.sidebar-nav {
+			flex: 1 1 auto;
+		}
+
+		.sidebar-link {
+			text-decoration: none;
+		}
+	}
+
+	>div {
+		>div {
+			height: calc(100dvh - ($headerHeight + 1px));
+			max-height: calc(100dvh - ($headerHeight + 1px));
+		}
+	}
+}
